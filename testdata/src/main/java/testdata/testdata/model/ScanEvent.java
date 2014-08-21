@@ -12,7 +12,7 @@ public class ScanEvent extends OperationsEvent {
 	private int itemDepth;
 	private int itemWeight;
 	private String scannerID;
-	private String location;
+	private OperationalLocation location;
 	
 	public String getEventCode() {
 		return eventCode;
@@ -62,10 +62,10 @@ public class ScanEvent extends OperationsEvent {
 	public void setScannerID(String scannerID) {
 		this.scannerID = scannerID;
 	}
-	public String getLocation() {
+	public OperationalLocation getLocation() {
 		return location;
 	}
-	public void setLocation(String location) {
+	public void setLocation(OperationalLocation location) {
 		this.location = location;
 	}
 	
