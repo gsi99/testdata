@@ -2,20 +2,20 @@ package testdata.testdata.model;
 
 public class GeoLocation {
 	
-	private String longitude;
-	private String lattitude;
+	private double longitude;
+	private double latitude;
 	
-	public String getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
-	public void setLongitude(String longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
-	public String getLattitude() {
-		return lattitude;
+	public double getLatitude() {
+		return latitude;
 	}
-	public void setLattitude(String lattitude) {
-		this.lattitude = lattitude;
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
 	}
 
 }

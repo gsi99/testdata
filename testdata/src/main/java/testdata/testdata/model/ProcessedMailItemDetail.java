@@ -2,12 +2,8 @@ package testdata.testdata.model;
 
 import java.util.Date;
 
-public class ProcesItemEventDetail {
+public class ProcessedMailItemDetail{
 	
-	Date timestamp;
-	double longitude;
-	double latitude;
-	String unitCode;
 	String uniqueItemId;
 	short weightGrams;
 	short declaredWeightGrams;
@@ -21,31 +17,8 @@ public class ProcesItemEventDetail {
 	String destinationPostcode;
 	String sourcePostCode;
 	String customerAccountNumber;
+	// recipientAddress
 	
-	public Date getTimestamp() {
-		return timestamp;
-	}
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
-	public double getLongitude() {
-		return longitude;
-	}
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
-	}
-	public double getLatitude() {
-		return latitude;
-	}
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-	public String getUnitCode() {
-		return unitCode;
-	}
-	public void setUnitCode(String unitCode) {
-		this.unitCode = unitCode;
-	}
 	public String getUniqueItemId() {
 		return uniqueItemId;
 	}

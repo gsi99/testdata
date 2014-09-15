@@ -1,15 +1,17 @@
 package testdata.testdata.model;
 
-public class OperationsEvent {
+import java.util.Date;
 
-	private GeoLocation geoLocation;
+public abstract class OperationsEvent {
+	
+	private Date eventDateTime;
 
-	public GeoLocation getGeoLocation() {
-		return geoLocation;
+	public Date getEventDateTime() {
+		return eventDateTime;
 	}
 
-	public void setGeoLocation(GeoLocation location) {
-		this.geoLocation = location;
+	public void setEventDateTime(Date eventDateTime) {
+		this.eventDateTime = eventDateTime;
 	}
 	
 }

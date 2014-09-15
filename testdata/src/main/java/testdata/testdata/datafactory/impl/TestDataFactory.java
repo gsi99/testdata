@@ -1,16 +1,13 @@
 package testdata.testdata.datafactory.impl;
 
 
-import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.Random;
-
-import javax.security.auth.login.AccountNotFoundException;
 
 import org.fluttercode.datafactory.AddressDataValues;
 import org.fluttercode.datafactory.ContentDataValues;
@@ -21,7 +18,8 @@ import org.fluttercode.datafactory.impl.DefaultNameDataValues;
 
 import testdata.testdata.datafactory.AccountDataValues;
 import testdata.testdata.datafactory.PostCodeDataValues;
-import testdata.testdata.model.PreAdviceDetail;
+import testdata.testdata.model.TestMailItem;
+import testdata.testdata.model.TestMailItems;
 
 /**
  * 
@@ -695,22 +693,33 @@ public final class TestDataFactory {
 	}
 	
 	public Collection<String> createPreadviceDetails(int noOfRows, String accountNumber,
-			String[] productGroupCodes) {
+			String[] productGroupCodes, TestMailItems mailItems) {
 		
 		Collection<String> preadviceDetails = new ArrayList<String>();
 		
 		for (int i = 1; i <= noOfRows; i++) {
-			preadviceDetails.add(createPreadviceDetail(accountNumber, productGroupCodes));
+			TestMailItem testMailItem = new TestMailItem();
+			mailItems.setTestMailItem(testMailItem);
+			preadviceDetails.add(createPreadviceDetail(accountNumber, productGroupCodes, testMailItem));
 		}
 		
 		return preadviceDetails;
 		
 	}
 
-	public String createPreadviceDetail(String accountNumber, String[] productGroupCodes) {
+	public String createPreadviceDetail(String accountNumber, String[] productGroupCodes, TestMailItem testMailItem) {
 		// TODO Auto-generated method stub
 		StringBuffer pad = new StringBuffer(120);
-		PreAdviceDetail preAdviceDetail = new PreAdviceDetail();
+
+		String testPostcode = this.getPostCode();
+		String testAccountNumber = (accountNumber != null) ? accountNumber : this.getAccountNumber();
+		String testProductcode = (productGroupCodes.length > 0) ? getItem(productGroupCodes) : "ProductGroupCode";
+		String testUniqueItemId = "UniqueItemId-" + getRandomChars(10);
+
+		testMailItem.setDestinationPostCode(testPostcode);
+		testMailItem.setAccountNumber(accountNumber);
+		testMailItem.setProductCode(testProductcode);
+		testMailItem.setUniqueItemId(testUniqueItemId);
 		
 		pad.append(DEFAULT_RECORD_TYPE_INDICTOR);	pad.append(",");
 		pad.append(DEFAULT_VERSION_NUMBER);			pad.append(",");
@@ -721,14 +730,13 @@ public final class TestDataFactory {
 		pad.append("deliveryAddress2");				pad.append(",");
 		pad.append("deliveryAddress3");				pad.append(",");
 		pad.append("posttown");						pad.append(",");
-		pad.append(this.getPostCode());				pad.append(",");
+		pad.append(testPostcode);						pad.append(",");
 		pad.append("sortcode");						pad.append(",");
 		pad.append("sortcode");						pad.append(",");
 		pad.append("contract");						pad.append(",");
 		pad.append("serviceid");					pad.append(",");
 		pad.append("serviceenhancement");			pad.append(",");
-		pad.append((accountNumber != null) ? accountNumber : this.getAccountNumber());
-													pad.append(",");
+		pad.append(testAccountNumber);				pad.append(",");
 		pad.append("sendersref1");					pad.append(",");
 		pad.append("sendersref2");					pad.append(",");
 		pad.append("safeplace");					pad.append(",");
@@ -739,15 +747,14 @@ public final class TestDataFactory {
 		pad.append("NotificationCode");				pad.append(",");
 		pad.append("RecipientEmail");				pad.append(",");
 		pad.append("RecipientTelephone");			pad.append(",");
-		pad.append("UniqueItemID");					pad.append(",");
+		pad.append(testUniqueItemId);				pad.append(",");
 		pad.append("DeliveryCountry");				pad.append(",");
 		pad.append("RecipientContactNo");			pad.append(",");
 		pad.append("PricePaid");					pad.append(",");
 		pad.append("POLFADcode");					pad.append(",");
 		pad.append("RequiredatDelivery");			pad.append(",");
 		pad.append("DieNumber");					pad.append(",");
-		pad.append((productGroupCodes.length > 0) ? getItem(productGroupCodes) : "ProductGroupCode");
-													pad.append(",");
+		pad.append(testProductcode);				pad.append(",");
 		pad.append("PostageExpiryDate");			pad.append(",");
 		pad.append("TariffRate");					pad.append(",");
 		pad.append("TariffVersion");				pad.append(",");
@@ -790,6 +797,33 @@ public final class TestDataFactory {
 //		pad.setDimensionType("");
 //		pad.setTypeOfItem("");		
 		
+		return pad.toString();
+	}
+
+	public String createProcessItemEventDetail(TestMailItem testMailItem,
+			double longitude, double latitude, String locationUnitCode,
+			String eventCode, Date scanDateTime) {
+		StringBuffer pad = new StringBuffer(120);
+
+		/*
+		 * ScanLocation - org unit code, Scan location, longitude, latitude,
+		 * ScannerId, unique item id, scan date time, event code, item length,
+		 * width, depth item weight
+		 */
+		testMailItem.setProcesingUnitCode(locationUnitCode);
+
+		pad.append(testMailItem.getProcesingUnitCode());	pad.append(",");
+		pad.append(longitude);								pad.append(",");
+		pad.append(latitude);								pad.append(",");
+		pad.append("ScannerID");							pad.append(",");
+		pad.append(testMailItem.getUniqueItemId());			pad.append(",");
+		DateFormat df = DateFormat.getDateInstance();
+		pad.append(df.format(scanDateTime));				pad.append(",");
+		pad.append(eventCode);								pad.append(",");
+		pad.append("ItemLength");							pad.append(",");
+		pad.append("ItemWidth");							pad.append(",");
+		pad.append("ItemDepth");							pad.append(",");
+		pad.append("ItemWeight");							pad.append(",");
 		return pad.toString();
 	}
 
