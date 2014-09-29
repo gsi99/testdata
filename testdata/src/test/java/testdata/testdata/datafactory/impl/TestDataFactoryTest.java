@@ -58,13 +58,14 @@ public class TestDataFactoryTest extends TestCase {
 		
 //		TO DO
 //			date format should be a UTF format
-//			unique item id is being set to null
+//			
 		
 		
 //		*/
 		
 		TestMailItem testMailItem = new TestMailItem();
 		testMailItem.setAccountNumber("1234567");
+		testMailItem.setUniqueItemId("UIID-" + df.getRandomChars(10));
 		double longitude = 53.812453;
 		double latitude = -1.711460;
 		String locationUnitCode = "OrgUnit1";
@@ -79,6 +80,10 @@ public class TestDataFactoryTest extends TestCase {
 		String response = df.createProcessItemEventDetail(testMailItem, longitude, latitude, locationUnitCode, eventCode, dt);
 		
 		assertNotNull("Null returned from process item event detail creation", response);
+		// Check OrgUnit Id is set - first value
+		// Check long / lat is set
+		// Check uiid is set
+		// check event code is set
 		
 		System.out.println(response);
 	}

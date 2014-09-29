@@ -1,6 +1,7 @@
 package testdata.testdata.datafactory.impl;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -812,19 +813,48 @@ public final class TestDataFactory {
 		 */
 		testMailItem.setProcesingUnitCode(locationUnitCode);
 
-		pad.append(testMailItem.getProcesingUnitCode());	pad.append(",");
+		padItemValue("ProcesingUnitCode", testMailItem, pad, true);
 		pad.append(longitude);								pad.append(",");
 		pad.append(latitude);								pad.append(",");
 		pad.append("ScannerID");							pad.append(",");
-		pad.append(testMailItem.getUniqueItemId());			pad.append(",");
+		padItemValue("UniqueItemId", testMailItem, pad, true);
 		DateFormat df = DateFormat.getDateInstance();
 		pad.append(df.format(scanDateTime));				pad.append(",");
 		pad.append(eventCode);								pad.append(",");
 		pad.append("ItemLength");							pad.append(",");
 		pad.append("ItemWidth");							pad.append(",");
 		pad.append("ItemDepth");							pad.append(",");
-		pad.append("ItemWeight");							pad.append(",");
+		pad.append("ItemWeight");							//pad.append(",");
 		return pad.toString();
+	}
+
+	private void padItemValue(String attrName, TestMailItem testMailItem, StringBuffer pad, boolean appendComma) {
+		java.lang.reflect.Method method = null;
+		try {
+		  method = testMailItem.getClass().getMethod("get" + attrName);
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+		
+		Object object = null;
+		try {
+			  object = method.invoke(testMailItem);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		String valueString = (String)object; 
+		
+		pad.append(valueString);
+		
+		if (appendComma) {
+			pad.append(",");
+		}
 	}
 
 }
