@@ -6,7 +6,7 @@ public class TestMailItem {
 	private String ProductCode;
 	private String AccountNumber;
 	private String DestinationPostCode;
-	private String ProcesingUnitCode;
+	private String ProcessingUnitCode;
 
 	public String getUniqueItemId() {
 		return uniqueItemId;
@@ -32,10 +32,10 @@ public class TestMailItem {
 	public void setDestinationPostCode(String destinationPostCode) {
 		DestinationPostCode = destinationPostCode;
 	}
-	public String getProcesingUnitCode() {
-		return ProcesingUnitCode;
+	public String getProcessingUnitCode() {
+		return ProcessingUnitCode;
 	}
-	public void setProcesingUnitCode(String procesingUnitCode) {
-		ProcesingUnitCode = procesingUnitCode;
+	public void setProcessingUnitCode(String procesingUnitCode) {
+		ProcessingUnitCode = procesingUnitCode;
 	}
 }

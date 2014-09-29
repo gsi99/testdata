@@ -9,6 +9,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import org.joda.time.*;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import org.fluttercode.datafactory.AddressDataValues;
 import org.fluttercode.datafactory.ContentDataValues;
@@ -802,30 +806,66 @@ public final class TestDataFactory {
 	}
 
 	public String createProcessItemEventDetail(TestMailItem testMailItem,
-			double longitude, double latitude, String locationUnitCode,
+			String versionNumber, String scannerId, double longitude, double latitude, String locationUnitCode,
 			String eventCode, Date scanDateTime) {
 		StringBuffer pad = new StringBuffer(120);
 
 		/*
-		 * ScanLocation - org unit code, Scan location, longitude, latitude,
-		 * ScannerId, unique item id, scan date time, event code, item length,
-		 * width, depth item weight
-		 */
-		testMailItem.setProcesingUnitCode(locationUnitCode);
+		Event scan format expected is csv with,
+		Numeric VersionNumber 
+		String ScannerID
+		String LocationUnitCode
+		Date EventDateTime
+		String EventCode
+		double Longitude
+		double Latitude
+		String UniqueItemId
+		short WeightGrams
+		short LenghMillimetres
+		short WidthMillimetres
+		short HeighMillimetres
+		short DeclaredWeightGrams
+		short DeclaredLenghMillimetres
+		short DeclaredWidthMillimetres
+		short DeclaredHeighMillimetres
+		String ShapeType
+		String DestinationPostcode
+		String SourcePostCode
+		String CustomerAccountNumber
+		ArrayList ValueList
+		
+		*/
 
-		padItemValue("ProcesingUnitCode", testMailItem, pad, true);
+		testMailItem.setProcessingUnitCode(locationUnitCode);
+
+		pad.append(versionNumber);							pad.append(",");
+		pad.append(scannerId);								pad.append(",");
+		padItemValue("ProcessingUnitCode", testMailItem, pad, true);
+		pad.append(dateStringInUTCFormat(scanDateTime));	pad.append(",");
+		pad.append(eventCode);								pad.append(",");
 		pad.append(longitude);								pad.append(",");
 		pad.append(latitude);								pad.append(",");
-		pad.append("ScannerID");							pad.append(",");
 		padItemValue("UniqueItemId", testMailItem, pad, true);
-		DateFormat df = DateFormat.getDateInstance();
-		pad.append(df.format(scanDateTime));				pad.append(",");
-		pad.append(eventCode);								pad.append(",");
-		pad.append("ItemLength");							pad.append(",");
-		pad.append("ItemWidth");							pad.append(",");
-		pad.append("ItemDepth");							pad.append(",");
-		pad.append("ItemWeight");							//pad.append(",");
+		pad.append("WeightGrams");							pad.append(",");
+		pad.append("Length");								pad.append(",");
+		pad.append("Width");								pad.append(",");
+		pad.append("Height");								pad.append(",");
+		pad.append("DeclaredWeightGrams");					pad.append(",");
+		pad.append("DeclaredLength");						pad.append(",");
+		pad.append("DeclaredWidth");						pad.append(",");
+		pad.append("DeclaredHeight");						pad.append(",");
+		pad.append("ShapeType");							pad.append(",");
+		padItemValue("DestinationPostCode", testMailItem, pad, true );
+		pad.append("SourcePostcode");					pad.append(",");
+		padItemValue("AccountNumber", testMailItem, pad, false);
 		return pad.toString();
+	}
+
+	private String dateStringInUTCFormat(Date scanDateTime) {
+		DateTime dt = new DateTime(scanDateTime);
+		DateTimeFormatter fmt = ISODateTimeFormat.dateTime(); 
+		String dateStr = fmt.withZoneUTC().print(dt);
+		return dateStr;
 	}
 
 	private void padItemValue(String attrName, TestMailItem testMailItem, StringBuffer pad, boolean appendComma) {
