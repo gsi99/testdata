@@ -9,10 +9,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
+
+import javax.print.DocFlavor.STRING;
 
 import org.fluttercode.datafactory.impl.DataFactory;
 
+import testdata.testdata.App.ItemProcessEventsList;
 import testdata.testdata.datafactory.impl.TestDataFactory;
 import testdata.testdata.model.TestMailItem;
 import testdata.testdata.model.TestMailItems;
@@ -30,14 +34,60 @@ public class App {
 		String accountNumber;
 		String[] productGroupCodeList;
 	}
+	
+	class ItemProcessEventsList {
+		String configNameString;
+		ArrayList<Collection<String>> itemProcessEventsArrayList;
+		
+		public ItemProcessEventsList() {
+			itemProcessEventsArrayList = new ArrayList<Collection<String>>(); 
+		}
+		
+		public void addItemProcessEvents(Collection<String> itemProcessEvents) {
+			itemProcessEventsArrayList.add(itemProcessEvents);
+		}
+		
+		public ArrayList<Collection<String>> getItemProcessEventsArrayList() {
+			return itemProcessEventsArrayList;
+		}
+	}
 
 	static TestDataFactory df = null;
 
 	public static void main(String[] args) {
 		df = new TestDataFactory();
 
-		// Setup array of preadvice file configs
-		Collection<App.PreadviceFileConfig> preadviceFileConfigs = new ArrayList<App.PreadviceFileConfig>();
+		List<App.PreadviceFileConfig> preadviceFileConfigs = createPreadviceConfigData();
+
+		List<Collection<String>> preadviceLists = new ArrayList<Collection<String>>();
+		List<ItemProcessEventsList> itemProcessEventsLists = new ArrayList<ItemProcessEventsList>();
+		//List<List<Collection<String>>> itemProcessEventsList = new ArrayList<List<Collection<String>>>(); 
+		List<TestMailItems> testMailItemsList = new ArrayList<TestMailItems>();
+		
+		createPreadviceDetailsForEachPreadviceConfig(preadviceFileConfigs,
+				preadviceLists, testMailItemsList);
+
+		createItemProcessEventsForEachTestMailItemList(itemProcessEventsLists, testMailItemsList);
+		
+		writeEachPreadviceDataSetToFile(preadviceLists, testMailItemsList);
+		
+		writeItemProcessEventsDataToFiles(itemProcessEventsLists);
+		
+		printTestMailItems(testMailItemsList);
+
+	}
+
+	private static void writeEachPreadviceDataSetToFile(
+			List<Collection<String>> preadviceLists, List<TestMailItems> testMailItemsList) {
+		for (int i = 0; i < preadviceLists.size(); i++) {
+			List<String> preadviceLines = (List<String>) preadviceLists.get(i);
+			String configName = ((TestMailItems) testMailItemsList.get(i)).getConfigName();
+			writeCollection(preadviceLines, configName);
+		}
+	}
+	
+	private static List<App.PreadviceFileConfig> createPreadviceConfigData() {
+		List<App.PreadviceFileConfig> preadviceFileConfigs = new ArrayList<App.PreadviceFileConfig>();
 		App app = new App();
 		PreadviceFileConfig fileConfig1 = app.new PreadviceFileConfig();
 		fileConfig1.configName = "fileConfig1";
@@ -55,10 +105,46 @@ public class App {
 
 		preadviceFileConfigs.add(fileConfig1);
 		preadviceFileConfigs.add(fileConfig2);
+		return preadviceFileConfigs;
+	}
+	
 
-		Collection<Collection<String>> preadviceCollections = new ArrayList<Collection<String>>();
-		Collection<TestMailItems> testMailItemsList = new ArrayList<TestMailItems>();
+	private static void createItemProcessEventsForEachTestMailItemList(
+			List<ItemProcessEventsList> itemProcessEventsLists,
+			List<TestMailItems> testMailItemsList) {
+		for (Iterator<TestMailItems> iterator = testMailItemsList.iterator(); iterator
+				.hasNext();) {
+			TestMailItems testMailItems = (TestMailItems) iterator.next();
+			
+			App app = new App();
+			App.ItemProcessEventsList itemProcessEventsList = app.new ItemProcessEventsList();
+			itemProcessEventsList.configNameString = testMailItems.getConfigName();
+			itemProcessEventsLists.add(itemProcessEventsList);
+			itemProcessEventsList.addItemProcessEvents(createItemProcessEventsForEachTestMailItemList(testMailItems, "EV01"));
+		}
 		
+	}	
+
+	private static Collection<String> createItemProcessEventsForEachTestMailItemList(
+			TestMailItems testMailItems, String eventCode) {
+		
+		String versionNumber = "v1.0";
+		String scannerId = "Scanner01";
+		Double longitude = 1.0;
+		Double latitude = -1.0;
+		Date scanDateTime = new Date();
+		Collection<String> itemProcessEvents = new ArrayList<String>(); 
+		for (Iterator<TestMailItem> iterator = testMailItems.getTestMailItems().iterator(); iterator.hasNext();) {
+			TestMailItem testMailItem = (TestMailItem) iterator.next();	
+			itemProcessEvents.add(df.createProcessItemEventDetail(testMailItem, versionNumber, scannerId, longitude, latitude, testMailItem.getProcessingUnitCode(), eventCode, scanDateTime));
+		}
+		return itemProcessEvents;
+	}
+
+	private static void createPreadviceDetailsForEachPreadviceConfig(
+			Collection<App.PreadviceFileConfig> preadviceFileConfigs,
+			Collection<Collection<String>> preadviceCollections,
+			Collection<TestMailItems> testMailItemsList) {
 		// loop through each config element
 		for (Iterator<App.PreadviceFileConfig> iterator = preadviceFileConfigs
 				.iterator(); iterator.hasNext();) {
@@ -73,16 +159,6 @@ public class App {
 					preadviceFileConfig,
 					testMailItems);
 		}
-
-		for (Iterator<Collection<String>> iterator = preadviceCollections
-				.iterator(); iterator.hasNext();) {
-			Collection<String> collection = (Collection<String>) iterator
-					.next();
-			writeCollection(collection);
-		}
-		
-		printTestMailItems(testMailItemsList);
-
 	}
 
 	private static void createAndAddPreadviceDetails(Collection<Collection<String>> preadviceCollections,
@@ -115,22 +191,61 @@ public class App {
 		}
 		System.out.println(" ========= TestMailItems Finished=======");		
 	}
+	
+	private static void writeItemProcessEventsDataToFiles(
+			List<App.ItemProcessEventsList> itemProcessEventsLists) {
+		String suffix = "itemProcessEvents"
+				+ new SimpleDateFormat("-yyyyMMddhhmm").format(new Date())
+				+ "-";
 
-	private static void writeCollection(Collection<String> collection) {
-		String suffix = new SimpleDateFormat("yyyyMMddhhmm").format(new Date());
-		File file = new File("/tmp/preadvice" + suffix + ".txt");
-		for (Iterator<String> iterator2 = collection.iterator(); iterator2
-				.hasNext();) {
-			String preadviceLine = (String) iterator2.next();
-			try {
-				FileWriter fw = new FileWriter(file.getAbsoluteFile());
-				BufferedWriter bw = new BufferedWriter(fw);
-				bw.write(preadviceLine);
-				bw.close();
-				System.out.println(preadviceLine);
-			} catch (Exception e) {
-				System.out.println(e);
+		for (int i = 0; i < itemProcessEventsLists.size(); i++) {
+			App.ItemProcessEventsList itemProcessEventsList = (App.ItemProcessEventsList) itemProcessEventsLists
+					.get(i);
+			StringBuffer fileName = new StringBuffer();
+			fileName.append(suffix)
+					.append(itemProcessEventsList.configNameString).append("-");
+
+			for (int j = 0; j < itemProcessEventsList
+					.getItemProcessEventsArrayList().size(); j++) {
+				Collection<String> itemProcessEvents = (Collection<String>) itemProcessEventsList
+						.getItemProcessEventsArrayList().get(j);
+				fileName.append(j).append(".txt");
+				try {
+					File file = new File("/tmp/" + fileName.toString());
+					FileWriter fw = new FileWriter(file.getAbsoluteFile());
+					BufferedWriter bw = new BufferedWriter(fw);
+					for (Iterator<String> iterator3 = itemProcessEvents
+							.iterator(); iterator3.hasNext();) {
+						String itemProcessEventLine = (String) iterator3.next();
+						bw.write(itemProcessEventLine);
+						bw.newLine();
+						System.out.println(itemProcessEventLine);
+					}
+					bw.close();
+				} catch (Exception e) {
+					System.out.println(e);
+				}
 			}
+		}
+	}
+
+	private static void writeCollection(List<String> preadviceRows,
+			String configName) {
+		String suffix = new SimpleDateFormat("-yyyyMMddhhmm")
+				.format(new Date()) + "-" + configName;
+		File file = new File("/tmp/preadvice" + suffix + ".txt");
+		try {
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			for (Iterator<String> iterator2 = preadviceRows.iterator(); iterator2.hasNext();) {
+				String preadviceLine = (String) iterator2.next();
+				bw.write(preadviceLine);
+				bw.newLine();
+				System.out.println(preadviceLine);
+			}
+			bw.close();
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 	}
 
