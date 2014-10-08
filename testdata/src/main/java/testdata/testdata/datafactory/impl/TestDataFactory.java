@@ -2,17 +2,12 @@ package testdata.testdata.datafactory.impl;
 
 
 import java.lang.reflect.InvocationTargetException;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import org.joda.time.*;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import org.fluttercode.datafactory.AddressDataValues;
 import org.fluttercode.datafactory.ContentDataValues;
@@ -20,6 +15,9 @@ import org.fluttercode.datafactory.NameDataValues;
 import org.fluttercode.datafactory.impl.DefaultAddressDataValues;
 import org.fluttercode.datafactory.impl.DefaultContentDataValues;
 import org.fluttercode.datafactory.impl.DefaultNameDataValues;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import testdata.testdata.datafactory.AccountDataValues;
 import testdata.testdata.datafactory.PostCodeDataValues;
@@ -814,7 +812,7 @@ public final class TestDataFactory {
 		Event scan format expected is csv with,
 		Numeric VersionNumber 
 		String ScannerID
-		String LocationUnitCode
+		String ProcessingLocationUnitCode
 		Date EventDateTime
 		String EventCode
 		double Longitude
@@ -847,16 +845,16 @@ public final class TestDataFactory {
 		pad.append(latitude);								pad.append(",");
 		padItemValue("UniqueItemId", testMailItem, pad, true);
 		pad.append("WeightGrams");							pad.append(",");
-		pad.append("Length");								pad.append(",");
-		pad.append("Width");								pad.append(",");
-		pad.append("Height");								pad.append(",");
+		pad.append("LengthMillimetres");					pad.append(",");
+		pad.append("WidthMillimetres");						pad.append(",");
+		pad.append("HeightMillimetres");					pad.append(",");
 		pad.append("DeclaredWeightGrams");					pad.append(",");
-		pad.append("DeclaredLength");						pad.append(",");
-		pad.append("DeclaredWidth");						pad.append(",");
-		pad.append("DeclaredHeight");						pad.append(",");
+		pad.append("DeclaredLengthMillimetres");			pad.append(",");
+		pad.append("DeclaredWidthMillimetres");				pad.append(",");
+		pad.append("DeclaredHeightMillimetres");			pad.append(",");
 		pad.append("ShapeType");							pad.append(",");
 		padItemValue("DestinationPostCode", testMailItem, pad, true );
-		pad.append("SourcePostcode");					pad.append(",");
+		pad.append("SourcePostcode");						pad.append(",");
 		padItemValue("AccountNumber", testMailItem, pad, false);
 		return pad.toString();
 	}
