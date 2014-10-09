@@ -3,10 +3,11 @@ package testdata.testdata.model;
 public class TestMailItem {
 	
 	private String uniqueItemId;
-	private String ProductCode;
-	private String AccountNumber;
-	private String DestinationPostCode;
-	private String ProcessingUnitCode;
+	private String productCode;
+	private String accountNumber;
+	private String destinationPostCode;
+	private String sourcePostCodeString;
+	private String processingUnitCode;
 
 	public String getUniqueItemId() {
 		return uniqueItemId;
@@ -15,27 +16,33 @@ public class TestMailItem {
 		this.uniqueItemId = uniqueItemId;
 	}
 	public String getProductCode() {
-		return ProductCode;
+		return productCode;
 	}
 	public void setProductCode(String productCode) {
-		ProductCode = productCode;
+		this.productCode = productCode;
 	}
 	public String getAccountNumber() {
-		return AccountNumber;
+		return accountNumber;
 	}
 	public void setAccountNumber(String accountNumber) {
-		AccountNumber = accountNumber;
+		this.accountNumber = accountNumber;
 	}
 	public String getDestinationPostCode() {
-		return DestinationPostCode;
+		return destinationPostCode;
 	}
 	public void setDestinationPostCode(String destinationPostCode) {
-		DestinationPostCode = destinationPostCode;
+		this.destinationPostCode = destinationPostCode;
 	}
 	public String getProcessingUnitCode() {
-		return ProcessingUnitCode;
+		return processingUnitCode;
 	}
 	public void setProcessingUnitCode(String procesingUnitCode) {
-		ProcessingUnitCode = procesingUnitCode;
+		this.processingUnitCode = procesingUnitCode;
+	}
+	public String getSourcePostCodeString() {
+		return sourcePostCodeString;
+	}
+	public void setSourcePostCodeString(String sourcePostCodeString) {
+		this.sourcePostCodeString = sourcePostCodeString;
 	}
 }

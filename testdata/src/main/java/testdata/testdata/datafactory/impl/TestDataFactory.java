@@ -835,27 +835,28 @@ public final class TestDataFactory {
 		*/
 
 		testMailItem.setProcessingUnitCode(locationUnitCode);
+		String sourcePostCode = this.getPostCode();
 
-		pad.append(versionNumber);							pad.append(",");
+		pad.append(versionNumber);							pad.append(","); // VersionNumber
 		pad.append(scannerId);								pad.append(",");
-		padItemValue("ProcessingUnitCode", testMailItem, pad, true);
+		pad.append(locationUnitCode);						 pad.append(",");
 		pad.append(dateStringInUTCFormat(scanDateTime));	pad.append(",");
 		pad.append(eventCode);								pad.append(",");
-		pad.append(longitude);								pad.append(",");
-		pad.append(latitude);								pad.append(",");
+		pad.append("1.0");									pad.append(","); // longitude
+		pad.append("-1.0");									pad.append(","); // latitude
 		padItemValue("UniqueItemId", testMailItem, pad, true);
-		pad.append("WeightGrams");							pad.append(",");
-		pad.append("LengthMillimetres");					pad.append(",");
-		pad.append("WidthMillimetres");						pad.append(",");
-		pad.append("HeightMillimetres");					pad.append(",");
-		pad.append("DeclaredWeightGrams");					pad.append(",");
-		pad.append("DeclaredLengthMillimetres");			pad.append(",");
-		pad.append("DeclaredWidthMillimetres");				pad.append(",");
-		pad.append("DeclaredHeightMillimetres");			pad.append(",");
-		pad.append("ShapeType");							pad.append(",");
-		padItemValue("DestinationPostCode", testMailItem, pad, true );
-		pad.append("SourcePostcode");						pad.append(",");
-		padItemValue("AccountNumber", testMailItem, pad, false);
+		pad.append("1000");									pad.append(","); // weightingrams
+		pad.append("100");									pad.append(","); // LengthMillimetres
+		pad.append("50");									pad.append(","); // WidthMillimetres
+		pad.append("200");									pad.append(","); // HeightMillimetres
+		pad.append("1000");									pad.append(","); // DeclaredWeightGrams
+		pad.append("100");									pad.append(","); // DeclaredLengthMillimetres
+		pad.append("50");									pad.append(","); // DeclaredWidthMillimetres
+		pad.append("200");									pad.append(","); // DeclaredHeightMillimetres
+		pad.append("Rectangle");							pad.append(","); // ShapeType
+		padItemValue("DestinationPostCode", testMailItem, pad, true ); // DestinationPostCode
+		pad.append(sourcePostCode);							pad.append(","); // SourcePostcode
+		padItemValue("AccountNumber", testMailItem, pad, false); // AccountNumber
 		return pad.toString();
 	}
 

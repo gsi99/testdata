@@ -33,6 +33,7 @@ public class App {
 		int numberOfRows;
 		String accountNumber;
 		String[] productGroupCodeList;
+		String[] processingLocationList;
 	}
 	
 	class ItemProcessEventsList {
@@ -67,7 +68,7 @@ public class App {
 		createPreadviceDetailsForEachPreadviceConfig(preadviceFileConfigs,
 				preadviceLists, testMailItemsList);
 
-		createItemProcessEventsForEachTestMailItemList(itemProcessEventsLists, testMailItemsList);
+		createItemProcessEventsForEachTestMailItemList(itemProcessEventsLists, testMailItemsList, "EV01");
 		
 		writeEachPreadviceDataSetToFile(preadviceLists, testMailItemsList);
 		
@@ -95,6 +96,7 @@ public class App {
 		fileConfig1.numberOfRows = 10;
 		fileConfig1.productGroupCodeList = new String[] { "SD01", "SF01",
 				"RM24", "RM48", "RM24+", "RM48+" };
+		fileConfig1.processingLocationList = new String[] { "LON01", "LDS01", "COV01", "EDIN01", "LON02", "LON03"};
 
 		PreadviceFileConfig fileConfig2 = app.new PreadviceFileConfig();
 		fileConfig2.configName = "fileConfig2";
@@ -102,6 +104,7 @@ public class App {
 		fileConfig2.numberOfRows = 10;
 		fileConfig2.productGroupCodeList = new String[] { "SD01", "SF01",
 				"RM24+", "RM48+" };
+		fileConfig2.processingLocationList = new String[] { "LON01", "LDS01", "COV01", "EDIN01", "LON02", "LON03"};
 
 		preadviceFileConfigs.add(fileConfig1);
 		preadviceFileConfigs.add(fileConfig2);
@@ -111,7 +114,8 @@ public class App {
 
 	private static void createItemProcessEventsForEachTestMailItemList(
 			List<ItemProcessEventsList> itemProcessEventsLists,
-			List<TestMailItems> testMailItemsList) {
+			List<TestMailItems> testMailItemsList,
+			String eventCode) {
 		for (Iterator<TestMailItems> iterator = testMailItemsList.iterator(); iterator
 				.hasNext();) {
 			TestMailItems testMailItems = (TestMailItems) iterator.next();
@@ -120,7 +124,7 @@ public class App {
 			App.ItemProcessEventsList itemProcessEventsList = app.new ItemProcessEventsList();
 			itemProcessEventsList.configNameString = testMailItems.getConfigName();
 			itemProcessEventsLists.add(itemProcessEventsList);
-			itemProcessEventsList.addItemProcessEvents(createItemProcessEventsForEachTestMailItemList(testMailItems, "EV01"));
+			itemProcessEventsList.addItemProcessEvents(createItemProcessEventsForEachTestMailItemList(testMailItems, eventCode));
 		}
 		
 	}	
@@ -136,7 +140,7 @@ public class App {
 		Collection<String> itemProcessEvents = new ArrayList<String>(); 
 		for (Iterator<TestMailItem> iterator = testMailItems.getTestMailItems().iterator(); iterator.hasNext();) {
 			TestMailItem testMailItem = (TestMailItem) iterator.next();	
-			itemProcessEvents.add(df.createProcessItemEventDetail(testMailItem, versionNumber, scannerId, longitude, latitude, testMailItem.getProcessingUnitCode(), eventCode, scanDateTime));
+			itemProcessEvents.add(df.createProcessItemEventDetail(testMailItem, versionNumber, scannerId, longitude, latitude, df.getItem(testMailItems.getProcessingLocationList()), eventCode, scanDateTime));
 		}
 		return itemProcessEvents;
 	}
@@ -153,6 +157,7 @@ public class App {
 
 			TestMailItems testMailItems = new TestMailItems();
 			testMailItems.setConfigName(preadviceFileConfig.configName);
+			testMailItems.setProcessingLocationList(preadviceFileConfig.processingLocationList);
 			testMailItemsList.add(testMailItems);
 			
 			createAndAddPreadviceDetails(preadviceCollections,

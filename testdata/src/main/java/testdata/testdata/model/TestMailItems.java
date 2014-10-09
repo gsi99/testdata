@@ -6,6 +6,8 @@ import java.util.Collection;
 public class TestMailItems {
 	String configName;
 	Collection<TestMailItem> testMailItems;
+	String[] processingLocationList;
+	
 	public String getConfigName() {
 		return configName;
 	}
@@ -20,5 +22,12 @@ public class TestMailItems {
 			this.testMailItems = new ArrayList<TestMailItem>();
 		}	
 		this.testMailItems.add(testMailItem);
+	}
+	public void setProcessingLocationList(String[] processingLocationList) {
+		this.processingLocationList = processingLocationList;
+	}
+	
+	public String[] getProcessingLocationList() {
+		return processingLocationList;
 	}
 }
