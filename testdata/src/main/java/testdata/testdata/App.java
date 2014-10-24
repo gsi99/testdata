@@ -68,7 +68,7 @@ public class App {
 		createPreadviceDetailsForEachPreadviceConfig(preadviceFileConfigs,
 				preadviceLists, testMailItemsList);
 
-		createItemProcessEventsForEachTestMailItemList(itemProcessEventsLists, testMailItemsList, "EV01");
+		createItemProcessEventsForEachTestMailItemList(itemProcessEventsLists, testMailItemsList, "PREADVICED");
 		
 		writeEachPreadviceDataSetToFile(preadviceLists, testMailItemsList);
 		
